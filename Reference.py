@@ -198,13 +198,11 @@ class Reference(object):
         """
         pass
         
-        
-        
-        
-    
-    
-    
-    
+
+if __name__ == "__main__":
+    R1 = Reference("title", "Bo Wang", "MEMS", 12222, 1986)
+    print dir(R1.authors)
+    print R1.authors.__doc__
         
         
     
