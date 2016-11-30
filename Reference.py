@@ -198,6 +198,13 @@ class Reference(object):
         """
         pass
         
+    def __str__(self):
+        """The string representation of the reference
+        
+        Retruns:
+            str: The String representation of the reference
+        """
+        pass
 
 if __name__ == "__main__":
     R1 = Reference("title", "Bo Wang", "MEMS", 12222, 1986)
