@@ -2,6 +2,9 @@
 
 .. moduleauthor:: Wang Bo <wangbomicro@gmail.com>
 """
+from Exceptions import *
+import datetime
+import re
 
 class Reference(object):
     """Class of reference to refer to an article in a scientific journal.
@@ -27,20 +30,20 @@ class Reference(object):
             year (int): The publish year.
         """
         self.__title = title
-        if not self.isValidAuthor(authors):
-            raise AssertionError("The given authors name are invalid.")
+        if not self.isValidAuthors(authors):
+            raise IllegalAuthorsException(authors)
         else:
             self.__authors = authors
             
         self.__journal = journal
         
         if not self.isValidIssueNumber(issueNumber):
-            raise AssertionError("The given issueNumber is invalid.")
+            raise IllegalIssueNumberException(issueNumber)
         else:
             self.__issueNumber = issueNumber
         
         if not self.isValidYear(year):
-            raise AssertionError("The given year is invalid.")
+            raise IllegalYearException(year)
         else:
             self.__year = year
         
@@ -61,7 +64,10 @@ class Reference(object):
         Args:
             authors (list): The authors of this reference
         """
-        self.__authors = authors
+        if not self.isValidAuthors(authors):
+            raise IllegalAuthorsException(authors)
+        else:
+            self.__authors = authors
         
     @property
     def title(self):
@@ -113,7 +119,10 @@ class Reference(object):
             issueNumber (int): The issueNumber of the reference, has to be \
             not negative.
         """
-        self.__issueNumber = issueNumber
+        if not self.isValidIssueNumber(issueNumber):
+            raise IllegalIssueNumberException(issueNumber)
+        else:
+            self.__issueNumber = issueNumber
     
     @property
     def year(self):
@@ -130,9 +139,13 @@ class Reference(object):
         Args:
             year (int): The year of the reference published.
         """
-        self.__year = year
-        
-    def isValidAuthors(self, authors):
+        if not self.isValidYear(year):
+            raise IllegalYearException(year)
+        else:
+            self.__year = year
+    
+    @classmethod
+    def isValidAuthors(cls, authors):
         """Check if all the given authors name are valid.
         
         The valid name of the authors is given as last, first name.
@@ -145,9 +158,11 @@ class Reference(object):
             bool: True if all the names are valid, false if at least one of 
             the names are invalid.
         """
-        pass
+        
+        return False not in [cls.isValidAuthor(author) for author in authors]
     
-    def isValidAuthor(self, author):
+    @classmethod
+    def isValidAuthor(cls, author):
         """Check if the given single author name is valid.
         
         The valid name of the authors is given as last, first name.
@@ -159,8 +174,10 @@ class Reference(object):
         Returns:
             bool: True if the name is valid, false if the name are invalid.
         """
+        return re.match('^[a-zA-Z ]{1,20}, [a-zA-Z][a-zA-Z ]{1,20}$', author) is not None
     
-    def isValidIssueNumber(self, issueNumber):
+    @classmethod
+    def isValidIssueNumber(cls, issueNumber):
         """Check if the given issueNumber is valid.
         
         The valid issueNumber should larger then zero.
@@ -171,9 +188,10 @@ class Reference(object):
         Returns:
             bool: True if the issueNumber is valid.
         """
-        pass
+        return issueNumber > 0
     
-    def isValidYear(self, year):
+    @classmethod
+    def isValidYear(cls, year):
         """Check if the given year is valid.
         
         Args:
@@ -183,8 +201,9 @@ class Reference(object):
             bool: True if the 1500<= year <= (currentYear + 1)
         
         """
-        pass
+        return year >= 1500 and year <= datetime.date.today().year + 1
     
+
     def getAuthorsNumber(self):
         """Returns the number of Authors of the reference.
         
@@ -192,7 +211,7 @@ class Reference(object):
             int: The number of Authors of the reference.
         
         """
-        pass
+        return len(self.authors)
     
     def getAuthorsName(self):
         """Returns an list of authors.
@@ -203,29 +222,34 @@ class Reference(object):
         Returns:
             str: the authors names.
         """
-        pass
+        authorNameList = []
+        for author in self.authors:
+            last, first = author.split(", ")
+            authorNameList.append(first[0].upper() + ". " + last)
+        return authorNameList            
     
-    def captializeTitle(self, title):
+    def captializeTitle(self):
         """Set the first letter of each word of given string to uppercase.
         
-        Args:
-            title (str): The givenStrings.
-        
         """
-        pass
-    
+        self.title = ' '.join([word.capitalize() 
+                              for word in self.title.split(" ")])
+
     def is10YearsOld(self):
         """Check if the reference is 10 years old.
         
         Returns:
             bool: True if the reference is more then 10 years old.
         """
-        pass
+        return self.year + 10 < datetime.date.today().year
     
     def __repr__(self):
         """The internal representation of the reference
         """
-        pass
+        return "Reference({title},{authors},{journal},{issueNumber},{year})".\
+            format(title = self.title, authors = self.authors, 
+                   journal = self.journal, issueNumber = self.issueNumber,
+                   year = self.year)
     
     def __str__(self):
         """The string representation of the reference
@@ -233,7 +257,10 @@ class Reference(object):
         Retruns:
             str: The String representation of the reference
         """
-        pass
+        return "{authors}, {title}, {journal}, {issueNumber}, {year}".\
+            format(authors = ', '.join(self.getAuthorsName()), title = self.title, 
+                   journal = self.journal, issueNumber = self.issueNumber,
+                   year = self.year)
 
 if __name__ == "__main__":
     R1 = Reference("title", "Bo Wang", "MEMS", 12222, 1986)

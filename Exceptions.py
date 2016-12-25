@@ -24,7 +24,7 @@ class IllegalIssueNumberException(IllegalValueException):
     """
     def __init__(self, arg):
         msg = ("Wrong issueNumber assigned. ",
-               "issueNumber given is: %s, which should be larger than zero".format(arg))
+               "issueNumber given is: {}, which should be larger than zero".format(arg))
         self.code = 1001
         super(IllegalIssueNumberException, self).__init__(''.join(msg))
     
@@ -37,7 +37,7 @@ class IllegalYearException(IllegalValueException):
     def __init__(self, arg):
         
         msg = ("Wrong year assigned. ",
-               "year given is: %s, which should be larger than 1500 and smaller\
+               "year given is: {}, which should be larger than 1500 and smaller\
                 then current year + 1".format(arg))
         self.code = 1002
         super(IllegalYearException, self).__init__(''.join(msg))
@@ -52,7 +52,7 @@ class IllegalAuthorsException(IllegalValueException):
     def __init__(self, arg):
         # Call the base class constructor with the parameters it needs
         msg = ("Wrong authors value assigned. ",
-               "authors value given is: %s, which should be a list with element\
+               "authors value given is: {}, which should be a list with element\
                 'firstname, lastname'".format(arg))
         self.code = 1003
         super(IllegalAuthorsException, self).__init__(''.join(msg))

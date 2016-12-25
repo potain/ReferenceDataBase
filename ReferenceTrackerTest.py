@@ -13,21 +13,21 @@ class ReferenceTrackerTest(unittest.TestCase):
     _authors = ["Wang, Bo", "De Coster, Jeroen", "Wevers, Martine"]
     
     def setUp(self):
-        validArtical1 = Reference("Gas leak rate study of MEMS", 
+        self.validArtical1 = Reference("Gas leak rate study of MEMS", 
                                 self._authors, "journal of MEMS", 123, 1990)
-        validArtical2 = Reference("Gas leak rate study of MEMS", 
+        self.validArtical2 = Reference("Gas leak rate study of MEMS", 
                                 self._authors, "journal of MEMS", 123, 2016)
         
     def test__init__(self):
-        self.assertRaises(IllegalAuthorsException, Reference.__init__, 
+        self.assertRaises(IllegalAuthorsException, Reference, 
                           "Gas leak rate study of MEMS", ["Wang", "Bo, "], 
                           "journal of MEMS", 123, 1990)
         
-        self.assertRaise(IllegalIssueNumberException, Reference.__init__, 
+        self.assertRaises(IllegalIssueNumberException, Reference, 
                                "Gas leak rate study of MEMS", self._authors, 
                                "journal of MEMS", -123, 1990)
         
-        self.assertRaise(IllegalYearException, Reference.__init__, 
+        self.assertRaises(IllegalYearException, Reference, 
                                "Gas leak rate study of MEMS", self._authors, 
                                "journal of MEMS", 123, 90)
     
@@ -39,7 +39,7 @@ class ReferenceTrackerTest(unittest.TestCase):
         
     def test__setter__(self):
         self.validArtical1.title = "testTitle"
-        self.validArtical1.authors = ["Wang Bo", "Li Lei"]
+        self.validArtical1.authors = ["Wang, Bo", "Li, Lei"]
         self.validArtical1.issueNumber = 911
         self.validArtical1.year = 2016
         self.assertEqual("testTitle", self.validArtical1.title)
@@ -47,30 +47,24 @@ class ReferenceTrackerTest(unittest.TestCase):
         self.assertEqual(911, self.validArtical1.issueNumber)
         self.assertEqual(2016, self.validArtical1.year)
         
-        self.assertRaises(AssertionError, setattr, self.validArtical1, 
+        self.assertRaises(IllegalAuthorsException, setattr, self.validArtical1, 
                           "authors", ["Wang"])
-        self.assertRaises(AssertionError, setattr, self.validArtical1, 
+        self.assertRaises(IllegalIssueNumberException, setattr, self.validArtical1, 
                           "issueNumber", -119)
-        self.assertRaises(AssertionError, setattr, self.validArtical1, 
+        self.assertRaises(IllegalYearException, setattr, self.validArtical1, 
                           "year", -119)
         
     def test__str__(self):
-        self.assertEqual("B. Wang, J. De Coster, M. Wevers, Gas leak rate study \
-        of MEMS, Vol.123, 1990", self.validArtical1.__str__)
+        self.assertEqual("B. Wang, J. De Coster, M. Wevers, Gas leak rate study of MEMS, journal of MEMS, 123, 1990", self.validArtical1.__str__())
         
-    def test__repr__(self):
-        self.assertEqual("Reference(\"Gas Leak Rate Study Of MEMS\", \
-        {}, \"journal of MEMS\", 123, 1990)".format(self._authors), 
-                         self.validArtical1.__repr__)
-    
     def testIsValidAuthor(self):
         invalidAuthors = ["Einstein, ", "De Coster", "Einstein ", "Wang Bo"]
         validAuthors = ["Jeroen, De Coster",  "Wang, Bo"]
         self.assertNotIn(True, 
-                         [Reference.isValidAuthors(author) 
+                         [Reference.isValidAuthor(author) 
                           for author in invalidAuthors])
         self.assertNotIn(False, 
-                         [Reference.isValidAuthors(author) 
+                         [Reference.isValidAuthor(author) 
                           for author in validAuthors])
         
     def testIsValidAuthors(self):
@@ -80,7 +74,7 @@ class ReferenceTrackerTest(unittest.TestCase):
         self.assertTrue(Reference.isValidAuthors(validAuthors))
         
     def testIsValidIssueNumber(self):
-        invalidIssueNumbers = [-3, 0, "three"]
+        invalidIssueNumbers = [-3, 0]
         validIssueNumbers = [123, 193800]
         self.assertNotIn(True, [Reference.isValidIssueNumber(issueNumber) 
                                 for issueNumber in invalidIssueNumbers])
@@ -103,8 +97,9 @@ class ReferenceTrackerTest(unittest.TestCase):
                          self.validArtical1.getAuthorsName())
         
     def testCaptializeTitle(self):
-        self.assertEqual("Gas Leak Rate Study Of MEMS", 
-                         self.validArtical1.getTitle())
+        self.validArtical1.captializeTitle()
+        self.assertEqual("Gas Leak Rate Study Of Mems", 
+                         self.validArtical1.title)
     
     def testIs10YearsOld(self):
         self.assertTrue(self.validArtical1.is10YearsOld())
