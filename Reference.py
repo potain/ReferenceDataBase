@@ -3,7 +3,6 @@
 .. moduleauthor:: Wang Bo <wangbomicro@gmail.com>
 """
 
-
 class Reference(object):
     """Class of reference to refer to an article in a scientific journal.
     
@@ -26,13 +25,24 @@ class Reference(object):
             journal (str): The journal name the reference belongs to
             issueNumber (int): The issueNumber of the journal.
             year (int): The publish year.
-        
         """
         self.__title = title
-        self.__authors = authors
+        if not self.isValidAuthor(authors):
+            raise AssertionError("The given authors name are invalid.")
+        else:
+            self.__authors = authors
+            
         self.__journal = journal
-        self.__issueNumber = issueNumber
-        self.__year = year
+        
+        if not self.isValidIssueNumber(issueNumber):
+            raise AssertionError("The given issueNumber is invalid.")
+        else:
+            self.__issueNumber = issueNumber
+        
+        if not self.isValidYear(year):
+            raise AssertionError("The given year is invalid.")
+        else:
+            self.__year = year
         
     @property
     def authors(self):
@@ -40,7 +50,6 @@ class Reference(object):
         
         Returns:
             list: The authors of the reference.
-            
         
         """
         return self.__authors
@@ -56,7 +65,7 @@ class Reference(object):
         
     @property
     def title(self):
-        """
+        """The title of the artical
         """
         return self.__title
     
@@ -101,7 +110,8 @@ class Reference(object):
         """Set the issueNumber as the given issueNumber
         
         Args:
-            issueNumber (int): The issueNumber of the reference.
+            issueNumber (int): The issueNumber of the reference, has to be \
+            not negative.
         """
         self.__issueNumber = issueNumber
     
@@ -118,12 +128,12 @@ class Reference(object):
         """Set the year of the reference.
         
         Args:
-            year (int): The year of the reference.
+            year (int): The year of the reference published.
         """
         self.__year = year
         
     def isValidAuthors(self, authors):
-        """Check if the authors name is valid.
+        """Check if all the given authors name are valid.
         
         The valid name of the authors is given as last, first name.
         e.g., "Einstein, Albert".
@@ -132,9 +142,23 @@ class Reference(object):
             authors (list): The names of the author need to be checked.
         
         Returns:
-            bool: True if the names are valid, false if the names are invalid.
+            bool: True if all the names are valid, false if at least one of 
+            the names are invalid.
         """
         pass
+    
+    def isValidAuthor(self, author):
+        """Check if the given single author name is valid.
+        
+        The valid name of the authors is given as last, first name.
+        e.g., "Einstein, Albert".
+        
+        Args:
+            author (str): The name of the author need to be checked.
+            
+        Returns:
+            bool: True if the name is valid, false if the name are invalid.
+        """
     
     def isValidIssueNumber(self, issueNumber):
         """Check if the given issueNumber is valid.
@@ -156,7 +180,7 @@ class Reference(object):
             year (int): The year need to be checked.
         
         Returns:
-            bool: True if the 1000<=year<=2016
+            bool: True if the 1500<= year <= (currentYear + 1)
         
         """
         pass
@@ -197,7 +221,12 @@ class Reference(object):
             bool: True if the reference is more then 10 years old.
         """
         pass
-        
+    
+    def __repr__(self):
+        """The internal representation of the reference
+        """
+        pass
+    
     def __str__(self):
         """The string representation of the reference
         
@@ -210,7 +239,3 @@ if __name__ == "__main__":
     R1 = Reference("title", "Bo Wang", "MEMS", 12222, 1986)
     print dir(R1.authors)
     print R1.authors.__doc__
-        
-        
-    
-    
