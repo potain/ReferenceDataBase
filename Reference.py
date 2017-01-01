@@ -176,8 +176,8 @@ class Reference(object):
             (boolean) True if the authors, title, year and the class type of this 
             and other are all the same.
         """
-        
-        pass
+        return (self.authors == Other.authors) and (self.year == Other.year) \
+            and (self.title == Other.title) and (type(self) == type(Other)) 
     
     def alreadyCites(self, Other):
         """Check if the given Reference already in the citesSet of this.
@@ -189,7 +189,7 @@ class Reference(object):
             (boolean) True if and only if this publication has the given publication 
             as one of its elements in the cites Set.
         """
-        pass
+        return Other in self.cites
     
     def getAllCites(self):
         """Return a set collecting shallow copy of all references that 
@@ -199,7 +199,7 @@ class Reference(object):
             (set) the set of publications that this publication cited.
      
         """
-        pass
+        return self.cites.copy()
     
     def canCites(self, Other):
         """Check if this can cites the other reference.
@@ -214,7 +214,10 @@ class Reference(object):
             Otherwise, true if and only if this publication and the given 
             publication is not yet terminated.
         """
-        pass
+        return (Other is not None) and (not self.isTheSameAs(Other)) \
+            and (self.year >= Other.year) and (not self.isTerminated()) \
+            and (not Other.isTerminated())
+        
     
     def addAsCite(self, other):
         """Add the given publication as cited publication of this publication.
@@ -231,7 +234,12 @@ class Reference(object):
             IllegalArgumentException: This publication cannot have the given 
             publication as one of its cites publication. 
         """
-        pass
+        if (not self.canCites(other)):
+            raise IllegalValueException("This reference can not cites the given\
+            Exception.")
+
+        self.cites.add(other)
+        other.citedBy.add(self)
     
     def removeAsCite(self, other):
         """Remove the given publication from the cites set attached to 
@@ -248,8 +256,10 @@ class Reference(object):
              publication, the given publication remove this publication from 
              its citedBy set.
         """
-        pass
-    
+        if (self.alreadyCites(other)):
+            self.cites.remove(other)
+            other.citedBy.remove(self)
+        
     def haveProperCites(self):
         """Check whether this publication has proper cites attached to it.
         
@@ -258,7 +268,12 @@ class Reference(object):
             its cites attached to it, and each of its cites references this 
             publication as their citedBy set element.
         """
-        pass
+        for publication in self.cites:
+            if (not self.canCites(publication)):
+                return False
+            if (not publication.alreadyCitedBy(self)):
+                return False
+        return True
     
     def alreadyCitedBy(self, other):
         """Check if this reference has already CitedBy the given Reference
@@ -270,7 +285,7 @@ class Reference(object):
             (boolean): True if and only if this publication has the given 
             publication as one of its elements in the citesBy Set.
         """
-        pass
+        return other in self.citedBy
     
     def getAllCitedBy(self):
         """Return a set collecting shallow copy of all publication that cites 
@@ -279,10 +294,10 @@ class Reference(object):
         Returns:
             (set) the set of articles that cited this.
         """
-        pass
+        return self.citedBy.copy() 
     
     
-    def canBeCitedBy(self, other):
+    def canBeCitedBy(self, Other):
         """ Check whether this publication can be cited by the given publication.
         
         Returns:
@@ -291,8 +306,10 @@ class Reference(object):
             publication is the same as this, otherwise, true if and only if 
             this publication and the given publication is not yet terminated.
         """
-        pass
-    
+        return (Other is not None) and (not self.isTheSameAs(Other)) \
+            and (self.year >= Other.year) and (not self.isTerminated()) \
+            and (not Other.isTerminated())
+        
     def addAsCiteBy(self, other):
         """Add the given publication as citedBy publication of this publication.
         
@@ -309,9 +326,13 @@ class Reference(object):
             IllegalArgumentException This publication cannot have the given 
             publication as one of its citedBy article.
         """
-        pass
+        if (not self.canBeCitedBy(other)):
+            raise IllegalValueException("This reference can not be cited by the \
+            given Exception.")
 
-    
+        self.citedBy.add(other)
+        other.cites.add(self)
+
     def removeAsCitedBy(self, other):
         """Remove the given publication from the citedBy set attached to this.
         
@@ -326,12 +347,14 @@ class Reference(object):
             publication, the given publication remove this publication from its 
             cites Set.
         """
-        pass
+        if (self.alreadyCitedBy(other)):
+            self.citedBy.remove(other)
+            other.cites.remove(self)
     
     def isTerminated(self, other):
         """Check whether this publication is already terminated.
         """
-        pass
+        return self.__terminate
     
     def terminate(self):
         """Terminate this publication.
@@ -343,8 +366,14 @@ class Reference(object):
             set of this Publication. The cites and citeBy set of those 
             publications also removed this publication.
         """
-        pass
-    
+        for citedPublication in self.getAllCites():
+            if not citedPublication.isTerminated():
+                self.removeAsCites(citedPublication)
+        for publicationCitedThis in self.getAllCitedBy():
+            if not publicationCitedThis.isTerminated():
+                self.removeAsCitedBy(publicationCitedThis)
+        self.isTerminated = True
+        
     def haveProperCitedBy(self):
         """ Check whether this publication has proper citedBy publication 
         attached to it.
@@ -354,8 +383,12 @@ class Reference(object):
             attached to it, and each of its citedBy references this publication 
             as their cites set element.
         """
-        pass
-    
+        for publication in self.citedBy:
+            if (not self.canBeCitedBy(publication)):
+                return False
+            if (not publication.alreadyCites(self)):
+                return False
+        return True
     
     @classmethod
     def isValidAuthors(cls, authors):
