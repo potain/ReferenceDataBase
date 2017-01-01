@@ -28,6 +28,7 @@ class Reference(object):
             journal (str): The journal name the reference belongs to
             issueNumber (int): The issueNumber of the journal.
             year (int): The publish year.
+            __terminated (bool): Indicate whether the instance terminated.  
         """
         self.__title = title
         if not self.isValidAuthors(authors):
@@ -46,6 +47,13 @@ class Reference(object):
             raise IllegalYearException(year)
         else:
             self.__year = year
+        
+        #Initialize this article with empty cites and citedBy property. 
+        self.cites = set()
+        self.citedBy = set()
+        
+        self.__terminate = False
+        self.__id = -1
         
     @property
     def authors(self):
@@ -143,6 +151,211 @@ class Reference(object):
             raise IllegalYearException(year)
         else:
             self.__year = year
+    
+    @property
+    def id(self):
+        """The unique id number that refer to this, the initial value is -1.
+        
+        """
+        return self.__id
+    
+    @id.setter
+    def id(self, val):
+        """Set ths ID number of this.
+        
+        """
+        self.__id = val
+    
+    def isTheSameAs(self, Other):
+        """Check if the given reference is the same as this.
+        
+        Args:
+            other (Reference): The reference to be checked.
+        
+        Returns: 
+            (boolean) True if the authors, title, year and the class type of this 
+            and other are all the same.
+        """
+        
+        pass
+    
+    def alreadyCites(self, Other):
+        """Check if the given Reference already in the citesSet of this.
+        
+        Args:
+            Other (Reference): The reference to be checked.
+            
+        Returns:
+            (boolean) True if and only if this publication has the given publication 
+            as one of its elements in the cites Set.
+        """
+        pass
+    
+    def getAllCites(self):
+        """Return a set collecting shallow copy of all references that 
+        this reference has been cited.
+        
+        Returns:
+            (set) the set of publications that this publication cited.
+     
+        """
+        pass
+    
+    def canCites(self, Other):
+        """Check if this can cites the other reference.
+        
+        Args:
+            other (Reference): The reference to be checked.
+            
+        Returns: 
+            (boolean) False if the given publication is not effective. 
+            False if the given publication is newer than this publication 
+            False if the given publication is the same as this. 
+            Otherwise, true if and only if this publication and the given 
+            publication is not yet terminated.
+        """
+        pass
+    
+    def addAsCite(self, other):
+        """Add the given publication as cited publication of this publication.
+        
+        Args:
+            other (Reference): The article to be add as cited article. 
+        Post:   
+             This publication has the given publication as one of its cited
+             publication in its cites Set.
+        Post: 
+             The given publication reference this publication as one of its citedBy
+             publication in its citedBy set.
+        Throws: 
+            IllegalArgumentException: This publication cannot have the given 
+            publication as one of its cites publication. 
+        """
+        pass
+    
+    def removeAsCite(self, other):
+        """Remove the given publication from the cites set attached to 
+        this publication.
+            
+        Args:
+            other (Reference): The publication to be removed.
+            
+        Post:
+             This publication does not have the given publication as one of 
+             its cited publication.
+        Post: 
+             If this publication has the given publication as one of its cited 
+             publication, the given publication remove this publication from 
+             its citedBy set.
+        """
+        pass
+    
+    def haveProperCites(self):
+        """Check whether this publication has proper cites attached to it.
+        
+        Returns:
+            (boolean) True if and only if this publication can have each of 
+            its cites attached to it, and each of its cites references this 
+            publication as their citedBy set element.
+        """
+        pass
+    
+    def alreadyCitedBy(self, other):
+        """Check if this reference has already CitedBy the given Reference
+        
+        Args:
+            other (Reference): The reference need to be checked.
+        
+        Returns:
+            (boolean): True if and only if this publication has the given 
+            publication as one of its elements in the citesBy Set.
+        """
+        pass
+    
+    def getAllCitedBy(self):
+        """Return a set collecting shallow copy of all publication that cites 
+        this publication.
+        
+        Returns:
+            (set) the set of articles that cited this.
+        """
+        pass
+    
+    
+    def canBeCitedBy(self, other):
+        """ Check whether this publication can be cited by the given publication.
+        
+        Returns:
+            (boolean): False if this publication is not effective or if the 
+            given publication is older than this publication, or if the given 
+            publication is the same as this, otherwise, true if and only if 
+            this publication and the given publication is not yet terminated.
+        """
+        pass
+    
+    def addAsCiteBy(self, other):
+        """Add the given publication as citedBy publication of this publication.
+        
+        Args:
+            other (Reference): The publication to be add as citedBy publication.
+            
+        Post:
+             This publication has the given publication as one of its citedBy 
+             publication in its citedBy Set.
+        Post: 
+            The given publication reference this publication as one of its 
+            cites publication in its cites set.
+        throws:
+            IllegalArgumentException This publication cannot have the given 
+            publication as one of its citedBy article.
+        """
+        pass
+
+    
+    def removeAsCitedBy(self, other):
+        """Remove the given publication from the citedBy set attached to this.
+        
+        Args:
+            other (Reference): The publication to be removed from the citedBy 
+            set.
+        Post: 
+            This publication dose not have the given publication as one of its 
+            cetiedBy publication.
+        Post: 
+            If this publication has the given publication as one of its citedBy 
+            publication, the given publication remove this publication from its 
+            cites Set.
+        """
+        pass
+    
+    def isTerminated(self, other):
+        """Check whether this publication is already terminated.
+        """
+        pass
+    
+    def terminate(self):
+        """Terminate this publication.
+        
+        Post: 
+            This publication is terminated.
+        Post: 
+            No publication are attached any longer to the cites set and citedBy 
+            set of this Publication. The cites and citeBy set of those 
+            publications also removed this publication.
+        """
+        pass
+    
+    def haveProperCitedBy(self):
+        """ Check whether this publication has proper citedBy publication 
+        attached to it.
+        
+        Returns: 
+            True if and only if this publication can have each of its citedBy 
+            attached to it, and each of its citedBy references this publication 
+            as their cites set element.
+        """
+        pass
+    
     
     @classmethod
     def isValidAuthors(cls, authors):
@@ -254,7 +467,7 @@ class Reference(object):
     def __str__(self):
         """The string representation of the reference
         
-        Retruns:
+        Returns:
             str: The String representation of the reference
         """
         return "{authors}, {title}, {journal}, {issueNumber}, {year}".\
