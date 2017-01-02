@@ -1,4 +1,5 @@
-"""Science Reference module.
+"""A class of scientific publications, which involving title, authors,
+year of publication and a ID number.
 
 .. moduleauthor:: Wang Bo <wangbomicro@gmail.com>
 """
@@ -6,49 +7,53 @@ from Exceptions import *
 import datetime
 import re
 
-class Reference(object):
-    """Class of reference to refer to an article in a scientific journal.
+class Publication(object):
+    """Class of Publication to refer to an publication in a scientific journal.
     
-    The class involving title, authors, name of the journal, issue number of the
-    journal and the year of publication.
-    
-    .. note::
-        
-        This class is maybe change later.
-    
+        invar: 
+            The year of the publication must be a valid year.
+        invar: 
+            The authors name of the publication must be valid names. 
+            The name of an author is given as last name, first name, e.g., 
+            “Einstein, Albert”.
+        invar: 
+            The publication must has a proper cites and proper citedBy property. 
     """
     
-    def __init__(self, title, authors, journal, issueNumber, year):
-        """Initialize this new reference with given title, authors, journal, 
+    def __init__(self, title, authors, year):
+        """Initialize this new Publication with given title, authors, journal, 
         issueNumber and year.
         
         Args:
-            title (str): The title of the reference
-            authors (list): The authors name of the reference
-            journal (str): The journal name the reference belongs to
-            issueNumber (int): The issueNumber of the journal.
+            title (str): The title of the Publication
+            authors (list): The authors name of the Publication
             year (int): The publish year.
-            __terminated (bool): Indicate whether the instance terminated.  
+       
+         Post: 
+             The title of this new publication is equal to the given title.
+         Post: 
+             The authors of this new publication is equal to the given authors.
+         Post: 
+             The year of this new publication is equal to the give year.
+              
+         throws: 
+             IllegalAuthorException if the given author is invalid
+         throws: 
+             IllegalYearException if the given year is invalid
+    
         """
         self.__title = title
         if not self.isValidAuthors(authors):
             raise IllegalAuthorsException(authors)
         else:
             self.__authors = authors
-            
-        self.__journal = journal
-        
-        if not self.isValidIssueNumber(issueNumber):
-            raise IllegalIssueNumberException(issueNumber)
-        else:
-            self.__issueNumber = issueNumber
         
         if not self.isValidYear(year):
             raise IllegalYearException(year)
         else:
             self.__year = year
         
-        #Initialize this article with empty cites and citedBy property. 
+        #Initialize this publication with empty cites and citedBy property. 
         self.cites = set()
         self.citedBy = set()
         
@@ -57,20 +62,20 @@ class Reference(object):
         
     @property
     def authors(self):
-        """Returns the authors of this reference
+        """Returns the authors of this publication
         
         Returns:
-            list: The authors of the reference.
+            list: The authors of the publication.
         
         """
         return self.__authors
     
     @authors.setter
     def authors(self, authors):
-        """Set the authors of the reference as given authors.
+        """Set the authors of the publication as given authors.
         
         Args:
-            authors (list): The authors of this reference
+            authors (list): The authors of this publication
         """
         if not self.isValidAuthors(authors):
             raise IllegalAuthorsException(authors)
@@ -79,73 +84,34 @@ class Reference(object):
         
     @property
     def title(self):
-        """The title of the artical
+        """The title of the publication
         """
         return self.__title
     
     @title.setter
     def title(self, title):
-        """Set the title of the reference as given title.
+        """Set the title of the publication as given title.
         
         Args:
-            title (str): The title of this reference
+            title (str): The title of this publication
         """
         self.__title = title
         
-    @property
-    def journal(self):
-        """Return the journal name of this reference.
-        
-        Returns:
-            str: The journal name of this reference.
-        """
-        return self.__journal
-    
-    @journal.setter
-    def journal(self, journal):
-        """Set the journal of the reference
-        
-        Args:
-            journal (str): The journal name of this reference
-        """
-        self.__journal = journal
-    
-    @property
-    def issueNumber(self):
-        """Return the issueNumber of the reference.
-        
-        Returns:
-            int: The issueNumber of the reference.
-        """
-        return self.__issueNumber
-    
-    @issueNumber.setter
-    def issueNumber(self, issueNumber):
-        """Set the issueNumber as the given issueNumber
-        
-        Args:
-            issueNumber (int): The issueNumber of the reference, has to be \
-            not negative.
-        """
-        if not self.isValidIssueNumber(issueNumber):
-            raise IllegalIssueNumberException(issueNumber)
-        else:
-            self.__issueNumber = issueNumber
     
     @property
     def year(self):
-        """Return the year of the reference.
+        """Return the year of the publication.
         
-        Returns (int): The year of the published reference.
+        Returns (int): The year of the published publication.
         """
         return self.__year
     
     @year.setter
     def year(self, year):
-        """Set the year of the reference.
+        """Set the year of the publication.
         
         Args:
-            year (int): The year of the reference published.
+            year (int): The year of the publication published.
         """
         if not self.isValidYear(year):
             raise IllegalYearException(year)
@@ -167,10 +133,10 @@ class Reference(object):
         self.__id = val
     
     def isTheSameAs(self, Other):
-        """Check if the given reference is the same as this.
+        """Check if the given publication is the same as this.
         
         Args:
-            other (Reference): The reference to be checked.
+            other (Publication): The publication to be checked.
         
         Returns: 
             (boolean) True if the authors, title, year and the class type of this 
@@ -180,10 +146,10 @@ class Reference(object):
             and (self.title == Other.title) and (type(self) == type(Other)) 
     
     def alreadyCites(self, Other):
-        """Check if the given Reference already in the citesSet of this.
+        """Check if the given publication already in the citesSet of this.
         
         Args:
-            Other (Reference): The reference to be checked.
+            Other (Publication): The publication to be checked.
             
         Returns:
             (boolean) True if and only if this publication has the given publication 
@@ -192,8 +158,8 @@ class Reference(object):
         return Other in self.cites
     
     def getAllCites(self):
-        """Return a set collecting shallow copy of all references that 
-        this reference has been cited.
+        """Return a set collecting shallow copy of all publications that 
+        this publication has been cited.
         
         Returns:
             (set) the set of publications that this publication cited.
@@ -202,10 +168,10 @@ class Reference(object):
         return self.cites.copy()
     
     def canCites(self, Other):
-        """Check if this can cites the other reference.
+        """Check if this can cites the other publication.
         
         Args:
-            other (Reference): The reference to be checked.
+            other (Publication): The publication to be checked.
             
         Returns: 
             (boolean) False if the given publication is not effective. 
@@ -223,19 +189,19 @@ class Reference(object):
         """Add the given publication as cited publication of this publication.
         
         Args:
-            other (Reference): The article to be add as cited article. 
+            other (Publication): The publication to be add as cited publication. 
         Post:   
              This publication has the given publication as one of its cited
              publication in its cites Set.
         Post: 
-             The given publication reference this publication as one of its citedBy
+             The given publication add this publication as one of its citedBy
              publication in its citedBy set.
         Throws: 
             IllegalArgumentException: This publication cannot have the given 
             publication as one of its cites publication. 
         """
         if (not self.canCites(other)):
-            raise IllegalValueException("This reference can not cites the given\
+            raise IllegalValueException("This Publication can not cites the given\
             Exception.")
 
         self.cites.add(other)
@@ -246,7 +212,7 @@ class Reference(object):
         this publication.
             
         Args:
-            other (Reference): The publication to be removed.
+            other (Publication): The publication to be removed.
             
         Post:
              This publication does not have the given publication as one of 
@@ -265,7 +231,7 @@ class Reference(object):
         
         Returns:
             (boolean) True if and only if this publication can have each of 
-            its cites attached to it, and each of its cites references this 
+            its cites attached to it, and each of its cites Publications this 
             publication as their citedBy set element.
         """
         for publication in self.cites:
@@ -276,10 +242,10 @@ class Reference(object):
         return True
     
     def alreadyCitedBy(self, other):
-        """Check if this reference has already CitedBy the given Reference
+        """Check if this Publication has already CitedBy the given Publication
         
         Args:
-            other (Reference): The reference need to be checked.
+            other (Publication): The Publication need to be checked.
         
         Returns:
             (boolean): True if and only if this publication has the given 
@@ -292,7 +258,7 @@ class Reference(object):
         this publication.
         
         Returns:
-            (set) the set of articles that cited this.
+            (set) the set of publications that cited this.
         """
         return self.citedBy.copy() 
     
@@ -314,20 +280,20 @@ class Reference(object):
         """Add the given publication as citedBy publication of this publication.
         
         Args:
-            other (Reference): The publication to be add as citedBy publication.
+            other (Publication): The publication to be add as citedBy publication.
             
         Post:
              This publication has the given publication as one of its citedBy 
              publication in its citedBy Set.
         Post: 
-            The given publication reference this publication as one of its 
+            The given publication Publication this publication as one of its 
             cites publication in its cites set.
         throws:
             IllegalArgumentException This publication cannot have the given 
-            publication as one of its citedBy article.
+            publication as one of its citedBy publication.
         """
         if (not self.canBeCitedBy(other)):
-            raise IllegalValueException("This reference can not be cited by the \
+            raise IllegalValueException("This Publication can not be cited by the \
             given Exception.")
 
         self.citedBy.add(other)
@@ -337,7 +303,7 @@ class Reference(object):
         """Remove the given publication from the citedBy set attached to this.
         
         Args:
-            other (Reference): The publication to be removed from the citedBy 
+            other (Publication): The publication to be removed from the citedBy 
             set.
         Post: 
             This publication dose not have the given publication as one of its 
@@ -380,7 +346,7 @@ class Reference(object):
         
         Returns: 
             True if and only if this publication can have each of its citedBy 
-            attached to it, and each of its citedBy references this publication 
+            attached to it, and each of its citedBy Publications this publication 
             as their cites set element.
         """
         for publication in self.citedBy:
@@ -422,19 +388,6 @@ class Reference(object):
         """
         return re.match('^[a-zA-Z ]{1,20}, [a-zA-Z][a-zA-Z ]{1,20}$', author) is not None
     
-    @classmethod
-    def isValidIssueNumber(cls, issueNumber):
-        """Check if the given issueNumber is valid.
-        
-        The valid issueNumber should larger then zero.
-        
-        Args:
-            issueNumber (int): The issueNumber need to be checked.
-            
-        Returns:
-            bool: True if the issueNumber is valid.
-        """
-        return issueNumber > 0
     
     @classmethod
     def isValidYear(cls, year):
@@ -451,10 +404,10 @@ class Reference(object):
     
 
     def getAuthorsNumber(self):
-        """Returns the number of Authors of the reference.
+        """Returns the number of Authors of the Publication.
         
         Returns:
-            int: The number of Authors of the reference.
+            int: The number of Authors of the Publication.
         
         """
         return len(self.authors)
@@ -482,26 +435,26 @@ class Reference(object):
                               for word in self.title.split(" ")])
 
     def is10YearsOld(self):
-        """Check if the reference is 10 years old.
+        """Check if the Publication is 10 years old.
         
         Returns:
-            bool: True if the reference is more then 10 years old.
+            bool: True if the Publication is more then 10 years old.
         """
         return self.year + 10 < datetime.date.today().year
     
     def __repr__(self):
-        """The internal representation of the reference
+        """The internal representation of the Publication
         """
-        return "Reference({title},{authors},{journal},{issueNumber},{year})".\
+        return "Publication({title},{authors},{journal},{issueNumber},{year})".\
             format(title = self.title, authors = self.authors, 
                    journal = self.journal, issueNumber = self.issueNumber,
                    year = self.year)
     
     def __str__(self):
-        """The string representation of the reference
+        """The string representation of the Publication
         
         Returns:
-            str: The String representation of the reference
+            str: The String representation of the Publication
         """
         return "{authors}, {title}, {journal}, {issueNumber}, {year}".\
             format(authors = ', '.join(self.getAuthorsName()), title = self.title, 
@@ -509,6 +462,6 @@ class Reference(object):
                    year = self.year)
 
 if __name__ == "__main__":
-    R1 = Reference("title", "Bo Wang", "MEMS", 12222, 1986)
+    R1 = Publication("title", "Bo Wang", "MEMS", 12222, 1986)
     print dir(R1.authors)
     print R1.authors.__doc__
