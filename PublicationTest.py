@@ -1,33 +1,33 @@
-"""Unit Test for Reference Tracker
+"""Unit Test for Publication Tracker
 
 ..:: moduleauthors:: Wang Bo <wangbomicro@gmail.com>
 """
 
 import unittest
-from Reference import *
+from Publication import *
 from Exceptions import *
 
-class ReferenceTrackerTest(unittest.TestCase):
-    """Unit Test for Reference Tracker"""
+class PublicationTrackerTest(unittest.TestCase):
+    """Unit Test for Publication Tracker"""
     
     _authors = ["Wang, Bo", "De Coster, Jeroen", "Wevers, Martine"]
     
     def setUp(self):
-        self.validArtical1 = Reference("Gas leak rate study of MEMS", 
+        self.validArtical1 = Publication("Gas leak rate study of MEMS", 
                                 self._authors, "journal of MEMS", 123, 1990)
-        self.validArtical2 = Reference("Gas leak rate study of MEMS", 
+        self.validArtical2 = Publication("Gas leak rate study of MEMS", 
                                 self._authors, "journal of MEMS", 123, 2016)
         
     def test__init__(self):
-        self.assertRaises(IllegalAuthorsException, Reference, 
+        self.assertRaises(IllegalAuthorsException, Publication, 
                           "Gas leak rate study of MEMS", ["Wang", "Bo, "], 
                           "journal of MEMS", 123, 1990)
         
-        self.assertRaises(IllegalIssueNumberException, Reference, 
+        self.assertRaises(IllegalIssueNumberException, Publication, 
                                "Gas leak rate study of MEMS", self._authors, 
                                "journal of MEMS", -123, 1990)
         
-        self.assertRaises(IllegalYearException, Reference, 
+        self.assertRaises(IllegalYearException, Publication, 
                                "Gas leak rate study of MEMS", self._authors, 
                                "journal of MEMS", 123, 90)
     
@@ -61,32 +61,32 @@ class ReferenceTrackerTest(unittest.TestCase):
         invalidAuthors = ["Einstein, ", "De Coster", "Einstein ", "Wang Bo"]
         validAuthors = ["Jeroen, De Coster",  "Wang, Bo"]
         self.assertNotIn(True, 
-                         [Reference.isValidAuthor(author) 
+                         [Publication.isValidAuthor(author) 
                           for author in invalidAuthors])
         self.assertNotIn(False, 
-                         [Reference.isValidAuthor(author) 
+                         [Publication.isValidAuthor(author) 
                           for author in validAuthors])
         
     def testIsValidAuthors(self):
         invalidAuthors = ['Einstein', ", De Coster", "Einstein, ", "Wang Bo"]
         validAuthors = ["Jeroen, De Coster",  "Wang, Bo"]
-        self.assertFalse(Reference.isValidAuthors(invalidAuthors))
-        self.assertTrue(Reference.isValidAuthors(validAuthors))
+        self.assertFalse(Publication.isValidAuthors(invalidAuthors))
+        self.assertTrue(Publication.isValidAuthors(validAuthors))
         
     def testIsValidIssueNumber(self):
         invalidIssueNumbers = [-3, 0]
         validIssueNumbers = [123, 193800]
-        self.assertNotIn(True, [Reference.isValidIssueNumber(issueNumber) 
+        self.assertNotIn(True, [Publication.isValidIssueNumber(issueNumber) 
                                 for issueNumber in invalidIssueNumbers])
-        self.assertNotIn(False, [Reference.isValidIssueNumber(issueNumber) 
+        self.assertNotIn(False, [Publication.isValidIssueNumber(issueNumber) 
                                  for issueNumber in validIssueNumbers])
         
     def testIsValidYear(self):
         invalidYears = [1300, 2019, -2013, 0]
         validYears = [1994, 2016, 2017]
-        self.assertNotIn(True, [Reference.isValidYear(year) 
+        self.assertNotIn(True, [Publication.isValidYear(year) 
                                 for year in invalidYears])
-        self.assertNotIn(False, [Reference.isValidYear(year)
+        self.assertNotIn(False, [Publication.isValidYear(year)
                                  for year in validYears])
         
     def testGetAuthorNumber(self):
