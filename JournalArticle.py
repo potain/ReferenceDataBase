@@ -94,8 +94,7 @@ class JournalArticle(Publication):
         """
         return issueNumber > 0
     
-    def getWeight(self):
-        return self._weight
+
      
  
     
