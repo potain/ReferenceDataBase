@@ -234,6 +234,24 @@ class ReferenceDataBase(object):
         """    
         ReferenceDataBase.incrementID = ID
     
-
+    def authorCitationIndex(self, authorName):
+        """Calculate the citation index of given author. 
+        
+        The citation index is defined as the weighted sum of the citations of 
+        all the author's publications. The weight depend on the type of 
+        publication the author is cited in.
+        
+        Args:
+            authorName (str): The author name.
+        Returns:
+            (double) The author citation index. 
+        """
+        citationIndex = 0;
+        publications = self.findByAuthor(authorName)
+        for publication in publications:
+            citationIndex += publication.getWeight()
+        return citationIndex
+    
+    
     
         
