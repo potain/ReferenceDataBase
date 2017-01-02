@@ -3,20 +3,59 @@
 ..:: moduleauthors:: Wang Bo <wangbomicro@gmail.com>
 """
 
-import unittest
-from Publication import *
 from Exceptions import *
+from Publication import *
+import Book
+import ConferencePaper
+import JournalArticle
+import unittest
 
 class PublicationTrackerTest(unittest.TestCase):
     """Unit Test for Publication Tracker"""
     
     _authors = ["Wang, Bo", "De Coster, Jeroen", "Wevers, Martine"]
-    
+        
     def setUp(self):
         self.validArtical1 = Publication("Gas leak rate study of MEMS", 
                                 self._authors, "journal of MEMS", 123, 1990)
         self.validArtical2 = Publication("Gas leak rate study of MEMS", 
                                 self._authors, "journal of MEMS", 123, 2016)
+        
+        
+        self.reference10yearOld = JournalArticle("Gas leak rate study of MEMS", 
+                                self._authors, "journal of MEMS", 123, 1990);
+        self.referenceLastYear = JournalArticle("Gas leak rate study of MEMS", 
+                                self._authors, "journal of MEMS", 123, 2015);
+
+        self.publication1 = JournalArticle("publication1", self._authors, 
+                                           "journal of MEMS", 123, 2016);
+        self.publication2 = Book("publication2", ["Eric, Steegmans"], 
+                                 2014, "acco");
+        self.publication3 = ConferencePaper("publication3", 
+                                            ["Wang, Bo", "Ann, WitVrouw"],
+                                            2012, "Transducers")
+        self.publication4 = JournalArticle("publication4", 
+                                           ["Archesis, Test", "Shengping, Mao"],
+                                           "journal of MEMS", 123, 2010);
+        self.publication5 = Book("publication5", 
+                                 ["Els, Wang", "Oliever, Thus"], 
+                                 2008, "Springer")
+        self.publication6 = Book("publication6", 
+                                 ["Hellen, Wang", "Ou, Helen"], 
+                                 2006, "Springer")
+        self.publication_SameAs1 = JournalArticle("publication1", self._authors,
+                                                  "journal of MEMS", 123, 2016)
+        self.publication_Terminated = JournalArticle("publication_T", 
+                                                     self._authors, 
+                                                     "journal of MEMS", 
+                                                     123, 2012);
+        self.publication_Terminated.terminate();
+        
+        self.publication1.addAsCites(self.publication3);
+        self.publication2.addAsCites(self.publication3);
+        self.publication5.addAsCitedBy(self.publication3);
+        self.publication6.addAsCitedBy(self.publication3);
+        self.publication4.addAsCites(self.publication6);
         
     def test__init__(self):
         self.assertRaises(IllegalAuthorsException, Publication, 
