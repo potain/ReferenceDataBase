@@ -57,3 +57,17 @@ class IllegalAuthorsException(IllegalValueException):
         self.code = 1003
         super(IllegalAuthorsException, self).__init__(''.join(msg))
     
+class IllegalPublicationIdException(IllegalValueException):
+    """Wrong publicationID
+    
+    Args:
+        -arg: the wrong ID.
+    """
+    def __init__(self, arg):
+        # Call the base class constructor with the parameters it needs
+        msg = ("Wrong publication ID assigned. "
+               "ID given is: {}, which is not in the database".format(arg))
+        self.code = 1003
+        super(IllegalPublicationIdException, self).__init__(''.join(msg))
+    
+    
