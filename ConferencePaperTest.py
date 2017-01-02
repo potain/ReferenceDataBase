@@ -2,8 +2,6 @@
 
 ..:: moduleauthors:: Wang Bo <wangbomicro@gmail.com>
 """
-from Exceptions import IllegalAuthorsException, IllegalIssueNumberException, \
-    IllegalYearException
 import ConferencePaper
 import unittest
 
