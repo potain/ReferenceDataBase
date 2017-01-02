@@ -8,13 +8,38 @@ from Exceptions import IllegalIssueNumberException
 import Publication
 
 class JournalArticle(Publication):
-    pass
-    """
-    if not self.isValidIssueNumber(issueNumber):
+    """Initialize this new journalArticle with given title, authors, journal,
+    issueNumber and year.
+      
+     Pre: 
+         The given issue number must be a valid number for an journal.
+     Post: 
+         The journal of this new publication is equal to the given journal.
+     Post: 
+         The issueNumber of this new publication is equal to the given 
+         issueNumber number.
+     
+     Args: 
+         title (str): The title of the publication.
+         authors (list): The authors name of the publication
+         year (int): The publish year.
+         journal (str): The journal name the publication belongs to.
+         issueNumber (int): The issueNumber of the journal.
+     
+     throws: 
+         IllegalAuthorException if the given author is invalid
+         IllegalIssueNumberException if the given issueNumber is invalid
+         IllegalYearException if the given year is invalid
+     """
+    _weight = 1.0
+     
+    def __init__(self, title, authors, journal, issueNumber, year):
+        super(JournalArticle, self).__init__(title, authors, year)
+        if not self.isValidIssueNumber(issueNumber):
             raise IllegalIssueNumberException(issueNumber)
-        else:
-            self.__issueNumber = issueNumber
-    """
+        self._issueNumber = issueNumber
+        
+        self._journal = journal
     
     @property
     def journal(self):
@@ -27,12 +52,13 @@ class JournalArticle(Publication):
     
     @journal.setter
     def journal(self, journal):
-        """Set the journal of the Publication
+        """Set the journal of the journalArticle as the given journal name.
         
         Args:
             journal (str): The journal name of this Publication
         """
-        self.__journal = journal
+        if not self.isValidIssueNumber(journal):
+            self.__journal = journal
     
     @property
     def issueNumber(self):
@@ -56,16 +82,28 @@ class JournalArticle(Publication):
         else:
             self.__issueNumber = issueNumber
     
-    @classmethod
-    def isValidIssueNumber(cls, issueNumber):
-        """Check if the given issueNumber is valid.
+    def isValidIssueNumber(self, issueNumber):
+        """Check whether the given issueNumber is a valid issue number.
         
         The valid issueNumber should larger then zero.
         
         Args:
             issueNumber (int): The issueNumber need to be checked.
-            
         Returns:
-            bool: True if the issueNumber is valid.
+            bool: True if and only if the given issueNumber is not negative.
         """
         return issueNumber > 0
+    
+#     def getWeight(self):
+#         return self._weight
+#     
+#     @classmethod
+#     def isValidWeight(self, val):
+#         
+#     @classmethod
+#     def setWeight(cls, val):
+#         if not cls.isValidWeight(val):
+#             raise IllegalWeightException(weight)
+#         cls._weight = val;
+#         
+        

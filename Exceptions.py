@@ -70,4 +70,15 @@ class IllegalPublicationIdException(IllegalValueException):
         self.code = 1003
         super(IllegalPublicationIdException, self).__init__(''.join(msg))
     
+class IllegalStateException(Exception):
+    """Generic exception for Illegal Values."""
+    def __inti__(self, msgs):
+        Exception.__init__(self,msgs)
+    
+    def __str__(self):
+        return '%d'%self.code + "-" + self.mssage
+    
+    def __repr__(self):
+        return "%s: %d - %s" % (self.__class__, self.code, self.message)
+    
     
