@@ -1,5 +1,5 @@
 """A class of ConferencePaper as a special kind of publication. In addition to 
-title.
+title, year, authors, the ConferencePaper also have a conference.
 
 ..:: moduleauthor: WangBo <wangbomicro@gmail.com> 
 """
@@ -23,6 +23,8 @@ class ConferencePaper(Publication):
         IllegalAuthorException: if the given author is invalid
         IllegalYearException: if the given year is invalid
     """
+    _weight = 1.0
+    
     def __init__(self, title, authors, year, conference):
         super(ConferencePaper, self).__init__(title = title, authors = authors, 
                                               year = year)

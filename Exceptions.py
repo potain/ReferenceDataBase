@@ -67,8 +67,20 @@ class IllegalPublicationIdException(IllegalValueException):
         # Call the base class constructor with the parameters it needs
         msg = ("Wrong publication ID assigned. "
                "ID given is: {}, which is not in the database".format(arg))
-        self.code = 1003
+        self.code = 1004
         super(IllegalPublicationIdException, self).__init__(''.join(msg))
+class IllegalWeightException(IllegalValueException):
+    """Wrong weight
+    
+    Args:
+        weight: the wroing weight.
+    """
+    def __init__(self, arg):
+        # Call the base class constructor with the parameters it needs
+        msg = ("Wrong weight assigned. "
+               "Weight given is: {}, which is should be larger then zero".format(arg))
+        self.code = 1005
+        super(IllegalPublicationIdException, self).__init__(''.join(msg)) 
     
 class IllegalStateException(Exception):
     """Generic exception for Illegal Values."""

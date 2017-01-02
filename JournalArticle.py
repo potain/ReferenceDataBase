@@ -4,7 +4,7 @@ title, authors, year, JournalArtical have a journalName and a issueNumber.
 ..:: moduleauthor: WangBo <wangbomicro@gmail.com> 
 ..:: invar:  The issueNumber must be a valid issueNumber.
 """
-from Exceptions import IllegalIssueNumberException
+from Exceptions import IllegalIssueNumberException, IllegalWeightException
 import Publication
 
 class JournalArticle(Publication):
@@ -32,7 +32,7 @@ class JournalArticle(Publication):
          IllegalYearException if the given year is invalid
      """
     _weight = 1.0
-     
+    
     def __init__(self, title, authors, journal, issueNumber, year):
         super(JournalArticle, self).__init__(title, authors, year)
         if not self.isValidIssueNumber(issueNumber):
@@ -94,16 +94,10 @@ class JournalArticle(Publication):
         """
         return issueNumber > 0
     
-#     def getWeight(self):
-#         return self._weight
-#     
-#     @classmethod
-#     def isValidWeight(self, val):
-#         
-#     @classmethod
-#     def setWeight(cls, val):
-#         if not cls.isValidWeight(val):
-#             raise IllegalWeightException(weight)
-#         cls._weight = val;
-#         
+    def getWeight(self):
+        return self._weight
+     
+ 
+    
+         
         

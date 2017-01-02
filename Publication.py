@@ -460,6 +460,26 @@ class Publication(object):
             format(authors = ', '.join(self.getAuthorsName()), title = self.title, 
                    journal = self.journal, issueNumber = self.issueNumber,
                    year = self.year)
+    
+    @classmethod
+    def isValidWeight(self, weight):
+        """Check if the given weight 
+        
+        Returns:
+            bool: true if the given weight larger than 0.
+        """
+        return weight > 0
+    
+    @classmethod
+    def setWeight(cls, val):
+        """Set the publication weight to the given weight.
+        
+        Args:
+            weight(double):The weight to be set for the book 
+        """
+        if not cls.isValidWeight(val):
+            raise IllegalWeightException(val)
+        cls._weight = val;
 
 if __name__ == "__main__":
     R1 = Publication("title", "Bo Wang", "MEMS", 12222, 1986)

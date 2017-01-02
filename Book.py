@@ -10,18 +10,21 @@ class Book(Publication):
     """A class of book as a special kind of publication. In addition to title,
      authors, year, book have a publisher.
      
-    Post: The publisher of this new book is equal to the given publisher.
+    Post: 
+        The publisher of this new book is equal to the given publisher.
     
     Args:
-    title (str): The title of the publication.
-    authors (list): The authors name of the publication
-    year (int): The publish year.
-    Publisher (str): The publisher name of this book.
+        title (str): The title of the publication.
+        authors (list): The authors name of the publication
+        year (int): The publish year.
+        Publisher (str): The publisher name of this book.
     
     throws:
-    IllegalAuthorException: if the given author is invalid
-    IllegalYearException: if the given year is invalid
+        IllegalAuthorException: if the given author is invalid
+        IllegalYearException: if the given year is invalid
     """
+    _weight = 1.0
+    
     def __init__(self, title, authors, year, publisher):
         super(Book, self).__init__(title = title, authors = authors, year = year)
         self._publisher = publisher
