@@ -252,6 +252,20 @@ class ReferenceDataBase(object):
             citationIndex += publication.getWeight()
         return citationIndex
     
-    
-    
+    def findDirIndirCites(self, Id):
+        """For the given publication, returns all publications that directly or 
+        indirectly cite this publication.
+        
+        Args:
+            id: The publication id to be searched.
+        Returns:
+            (set) The set of publication that direct/indirectly cites this 
+            publication.
+        """
+        publicationsSet = self.getPublicationWithID(Id).getAllCitedBy()
+        results = set(publicationsSet)
+        if (len(publicationsSet) != 0):
+            for pub in publicationsSet:
+                results.addAll(self.findDirIndirCites(pub.getId()))
+        return results
         
