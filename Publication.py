@@ -480,6 +480,15 @@ class Publication(object):
         if not cls.isValidWeight(val):
             raise IllegalWeightException(val)
         cls._weight = val;
+    
+    @classmethod    
+    def getWeight(cls):
+        """Get the weight of this type of publication.
+        
+        Returns:
+            (double): The weigh of the current publication type.
+        """
+        return cls._weight
 
 if __name__ == "__main__":
     R1 = Publication("title", "Bo Wang", "MEMS", 12222, 1986)
